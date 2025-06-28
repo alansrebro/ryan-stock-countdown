@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ryan's Stock Promise Countdown - Tracking Market Re-entry</title>
+    <meta name="description" content="Countdown timer tracking Ryan Doherty's 2-year commitment to stay out of the stock market until March 7, 2027. Real-time progress tracking with text message proof.">
+    <meta property="og:title" content="Ryan's Stock Promise Countdown">
+    <meta property="og:description" content="Tracking Ryan Doherty's 2-year stock market commitment with real-time countdown and progress indicators.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: hsl(222, 84%, 4.9%);
+            --foreground: hsl(210, 40%, 98%);
+            --muted: hsl(217, 32.6%, 17.5%);
+            --muted-foreground: hsl(215, 20.2%, 65.1%);
+            --popover: hsl(222, 84%, 4.9%);
+            --popover-foreground: hsl(210, 40%, 98%);
+            --card: hsl(222, 84%, 4.9%);
+            --card-foreground: hsl(210, 40%, 98%);
+            --border: hsl(217, 32.6%, 17.5%);
+            --input: hsl(217, 32.6%, 17.5%);
+            --primary: hsl(207, 90%, 54%);
+            --primary-foreground: hsl(211, 100%, 99%);
+            --secondary: hsl(217, 32.6%, 17.5%);
+            --secondary-foreground: hsl(210, 40%, 98%);
+            --accent: hsl(217, 32.6%, 17.5%);
+            --accent-foreground: hsl(210, 40%, 98%);
+            --destructive: hsl(0, 62.8%, 30.6%);
+            --destructive-foreground: hsl(210, 40%, 98%);
+            --ring: hsl(212, 72%, 59%);
+            --radius: 0.5rem;
+            
+            /* Custom colors for the countdown theme */
+            --slate-900: hsl(222, 84%, 4.9%);
+            --slate-800: hsl(215, 27.9%, 16.9%);
+            --slate-700: hsl(215, 20.2%, 25.1%);
+            --slate-600: hsl(215, 16.3%, 46.9%);
+            --slate-400: hsl(215, 20.2%, 65.1%);
+            --slate-300: hsl(212, 45%, 89%);
+            --slate-200: hsl(210, 40%, 98%);
+            --blue-400: hsl(213, 94%, 68%);
+            --blue-500: hsl(217, 91%, 60%);
+            --blue-600: hsl(221, 83%, 53%);
+            --emerald-400: hsl(167, 85%, 89%);
+            --emerald-500: hsl(160, 84%, 39%);
+            --amber-400: hsl(43, 96%, 56%);
+            --teal-500: hsl(173, 80%, 40%);
+            --teal-200: hsl(180, 65%, 85%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--slate-900) 0%, var(--slate-800) 50%, var(--slate-900) 100%);
+            color: var(--slate-200);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, var(--blue-400), var(--emerald-400));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            backdrop-filter: blur(4px);
+            border-radius: 0.75rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .countdown-pulse {
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .grid {
+            display: grid;
+        }
+
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-cols-6 {
+            grid-template-columns: repeat(6, 1fr);
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .gap-6 {
+            gap: 1.5rem;
+        }
+
+        .gap-8 {
+            gap: 2rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-col {
+            flex-direction: column;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .rounded-xl {
+            border-radius: 12px;
+        }
+
+        .rounded-lg {
+            border-radius: 8px;
+        }
+
+        .rounded-full {
+            border-radius: 50%;
+        }
+
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .p-12 { padding: 3rem; }
+
+        .pt-8 { padding-top: 2rem; }
+        .pb-4 { padding-bottom: 1rem; }
+        .pb-8 { padding-bottom: 2rem; }
+        .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-12 { margin-bottom: 3rem; }
+        .mt-1 { margin-top: 0.25rem; }
+        .mt-2 { margin-top: 0.5rem; }
+
+        .max-w-md {
+            max-width: 28rem;
+        }
+
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .h-4 {
+            height: 1rem;
+        }
+
+        .space-y-6 > * + * {
+            margin-top: 1.5rem;
+        }
+
+        .transition-all {
+            transition: all 0.5s ease-in-out;
+        }
+
+        .progress-bar {
+            background: linear-gradient(to right, var(--emerald-500), var(--blue-500));
+            transition: width 0.5s ease-in-out;
+        }
+
+        .countdown-box {
+            background: rgba(51, 65, 85, 0.5);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 0.75rem;
+        }
+
+        .stats-box {
+            background: rgba(51, 65, 85, 0.3);
+            border-radius: 0.5rem;
+        }
+
+        .evidence-box {
+            background: rgba(51, 65, 85, 0.3);
+            border-radius: 0.75rem;
+        }
+
+        .img-responsive {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+        }
+
+        @media (min-width: 768px) {
+            .md\:grid-cols-6 {
+                grid-template-columns: repeat(6, 1fr);
+            }
+            .md\:flex-row {
+                flex-direction: row;
+            }
+            .md\:text-3xl {
+                font-size: 1.875rem;
+            }
+            .md\:text-5xl {
+                font-size: 3rem;
+            }
+            .md\:p-6 {
+                padding: 1.5rem;
+            }
+            .md\:p-12 {
+                padding: 3rem;
+            }
+            .md\:gap-6 {
+                gap: 1.5rem;
+            }
+            .container {
+                padding: 0 2rem;
+            }
+            .text-4xl {
+                font-size: 3rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .lg\:flex-row {
+                flex-direction: row;
+            }
+        }
+
+        .text-4xl { font-size: 2.25rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+
+        .text-slate-200 { color: var(--slate-200); }
+        .text-slate-300 { color: var(--slate-300); }
+        .text-slate-400 { color: var(--slate-400); }
+        .text-slate-500 { color: var(--slate-600); }
+        .text-blue-400 { color: var(--blue-400); }
+        .text-emerald-400 { color: var(--emerald-400); }
+        .text-amber-400 { color: var(--amber-400); }
+
+        .bg-slate-800 { background-color: var(--slate-800); }
+        .bg-slate-700 { background-color: var(--slate-700); }
+        .bg-slate-600 { background-color: var(--slate-600); }
+
+        .border-slate-700 { border-color: var(--slate-700); }
+        .border-t { border-top-width: 1px; }
+
+        .flex-1 { flex: 1; }
+
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+
+        .w-48 { width: 12rem; }
+        .h-48 { height: 12rem; }
+
+        .transform { transform: translateZ(0); }
+        .-rotate-90 { transform: rotate(-90deg); }
+
+        .completion-message {
+            font-size: 3.75rem;
+            color: var(--emerald-400);
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Loading state initially -->
+        <div id="loading" class="flex items-center justify-center min-h-screen">
+            <div class="text-2xl text-slate-400">Loading countdown...</div>
+        </div>
+        
+        <!-- Main content -->
+        <div id="content" style="display: none;">
+            <!-- Header -->
+            <header class="pt-8 pb-4 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold text-gradient">
+                    Ryan's Stock Promise
+                </h1>
+                <p class="text-slate-400 text-lg mt-2">Countdown to Market Re-entry</p>
+            </header>
+
+            <main class="container py-8">
+                <!-- Countdown Section -->
+                <section class="text-center mb-12">
+                    <div class="card p-8 md:p-12">
+                        <h2 class="text-2xl md:text-3xl font-semibold mb-8 text-slate-300">
+                            Time until <span class="text-blue-400 font-bold">Ryan Doherty</span> can buy stocks again
+                        </h2>
+                        
+                        <div id="countdown-grid" class="grid grid-cols-2 gap-4 mb-8">
+                            <!-- Countdown boxes will be inserted here -->
+                        </div>
+                        
+                        <div class="text-slate-400 text-lg">
+                            Target Date: <span class="text-slate-200 font-semibold">March 7, 2027 at 9:23 AM</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Progress Section -->
+                <section class="mb-12">
+                    <div class="card p-8 md:p-12">
+                        <h3 class="text-2xl font-semibold text-center mb-8 text-slate-300">
+                            Progress Through 2-Year Commitment
+                        </h3>
+                        
+                        <div class="flex flex-col gap-8">
+                            <div class="flex flex-col md:flex-row items-center justify-center gap-8">
+                                <!-- Circular Progress -->
+                                <div id="circular-progress" class="relative w-48 h-48">
+                                    <svg class="w-48 h-48 transform -rotate-90" viewBox="0 0 200 200">
+                                        <circle cx="100" cy="100" r="90" stroke="rgb(51, 65, 85)" stroke-width="8" fill="none"/>
+                                        <circle id="progress-circle" cx="100" cy="100" r="90" stroke="rgb(16, 185, 129)" stroke-width="8" fill="none"
+                                                stroke-dasharray="565.48" stroke-dashoffset="565.48" class="transition-all"/>
+                                    </svg>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <div class="text-center">
+                                            <div id="progress-percentage" class="text-3xl font-bold text-emerald-400">0.0</div>
+                                            <div class="text-slate-400 text-sm">% Complete</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Linear Progress Bar -->
+                                <div class="flex-1 max-w-md">
+                                    <div class="mb-4">
+                                        <div class="flex justify-between text-sm text-slate-400 mb-2">
+                                            <span>Started: Mar 7, 2025</span>
+                                            <span>Ends: Mar 7, 2027</span>
+                                        </div>
+                                        <div class="w-full bg-slate-700 rounded-full h-4">
+                                            <div id="linear-progress" class="progress-bar h-4 rounded-full" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Stats -->
+                                    <div class="grid grid-cols-2 gap-4 text-center">
+                                        <div class="stats-box p-3">
+                                            <div id="days-elapsed" class="text-lg font-semibold text-emerald-400">0</div>
+                                            <div class="text-xs text-slate-400">Days Elapsed</div>
+                                        </div>
+                                        <div class="stats-box p-3">
+                                            <div id="days-remaining" class="text-lg font-semibold text-amber-400">0</div>
+                                            <div class="text-xs text-slate-400">Days Remaining</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Evidence Section -->
+                <section class="mb-12">
+                    <div class="card p-8 md:p-12">
+                        <h3 class="text-2xl font-semibold text-center mb-8 text-slate-300">
+                            The Commitment Evidence
+                        </h3>
+                        
+                        <div class="flex flex-col lg:flex-row items-center gap-8">
+                            <!-- Screenshot Display -->
+                            <div class="flex-1 max-w-md mx-auto">
+                                <img src="./Ryan_1751134895978.jpg" 
+                                     alt="Ryan Doherty's text message commitment to stay out of stocks for 2 years"
+                                     class="img-responsive">
+                            </div>
+                            
+                            <!-- Commitment Details -->
+                            <div class="flex-1 space-y-6">
+                                <div class="evidence-box p-6">
+                                    <h4 class="text-lg font-semibold text-blue-400 mb-3">The Promise</h4>
+                                    <p class="text-slate-300">
+                                        Ryan Doherty committed to waiting <strong>2 years</strong> before buying stocks again, 
+                                        or until there's a <strong>25% market loss</strong> - whichever comes first.
+                                    </p>
+                                </div>
+                                
+                                <div class="evidence-box p-6">
+                                    <h4 class="text-lg font-semibold text-emerald-400 mb-3">Commitment Date</h4>
+                                    <p class="text-slate-300">March 7, 2025 at 9:23 AM</p>
+                                </div>
+                                
+                                <div class="evidence-box p-6">
+                                    <h4 class="text-lg font-semibold text-amber-400 mb-3">Target Re-entry</h4>
+                                    <p class="text-slate-300">March 7, 2027 at 9:23 AM</p>
+                                    <p class="text-slate-400 text-sm mt-1">(Unless 25% market loss occurs first)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- Footer -->
+            <footer class="text-center py-8 border-t border-slate-700">
+                <p class="text-slate-400 text-sm">
+                    Holding Ryan accountable, one second at a time ⏰
+                </p>
+                <p class="text-slate-500 text-xs mt-2">
+                    Updates in real-time • Built with dedication to transparency
+                </p>
+            </footer>
+        </div>
+
+        <!-- Completion state -->
+        <div id="completion" style="display: none;" class="min-h-screen flex items-center justify-center text-center container">
+            <div>
+                <h1 class="completion-message font-bold">
+                    🎉 TIME'S UP! 🎉
+                </h1>
+                <p class="text-2xl text-slate-300">
+                    Ryan can buy stocks again!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Commitment date: March 7, 2025 at 9:23 AM
+        const commitmentDate = new Date('2025-03-07T09:23:00');
+        // Target date: March 7, 2027 at 9:23 AM (exactly 2 years later)
+        const targetDate = new Date('2027-03-07T09:23:00');
+
+        let updateInterval;
+
+        function updateCountdown() {
+            const now = new Date();
+            const timeRemaining = targetDate.getTime() - now.getTime();
+            const totalDuration = targetDate.getTime() - commitmentDate.getTime();
+
+            if (timeRemaining <= 0) {
+                showCompletion();
+                return;
+            }
+
+            // Calculate time units
+            const years = Math.floor(timeRemaining / (365.25 * 24 * 60 * 60 * 1000));
+            const months = Math.floor((timeRemaining % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000));
+            const days = Math.floor((timeRemaining % (30.44 * 24 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000));
+            const hours = Math.floor((timeRemaining % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+            const minutes = Math.floor((timeRemaining % (60 * 60 * 1000)) / (60 * 1000));
+            const seconds = Math.floor((timeRemaining % (60 * 1000)) / 1000);
+
+            // Update countdown display
+            updateCountdownGrid({ years, months, days, hours, minutes, seconds });
+
+            // Calculate progress
+            const elapsed = now.getTime() - commitmentDate.getTime();
+            const progressPercentage = Math.max(0, Math.min(100, (elapsed / totalDuration) * 100));
+            
+            const daysElapsed = Math.floor(elapsed / (24 * 60 * 60 * 1000));
+            const totalDays = Math.floor(totalDuration / (24 * 60 * 60 * 1000));
+            const daysRemaining = Math.max(0, totalDays - daysElapsed);
+
+            updateProgress({
+                percentage: progressPercentage,
+                daysElapsed,
+                daysRemaining
+            });
+        }
+
+        function updateCountdownGrid(countdown) {
+            const grid = document.getElementById('countdown-grid');
+            const units = [
+                { label: 'Years', value: countdown.years, color: 'text-amber-400' },
+                { label: 'Months', value: countdown.months, color: 'text-amber-400' },
+                { label: 'Days', value: countdown.days, color: 'text-amber-400' },
+                { label: 'Hours', value: countdown.hours, color: 'text-blue-400' },
+                { label: 'Minutes', value: countdown.minutes, color: 'text-blue-400' },
+                { label: 'Seconds', value: countdown.seconds, color: 'text-emerald-400' }
+            ];
+
+            // Add responsive grid classes
+            if (window.innerWidth >= 768) {
+                grid.className = 'grid md:grid-cols-6 gap-4 md:gap-6 mb-8';
+            } else {
+                grid.className = 'grid grid-cols-2 gap-4 mb-8';
+            }
+
+            grid.innerHTML = units.map((unit, index) => `
+                <div class="countdown-box rounded-xl p-4 md:p-6">
+                    <div class="text-3xl md:text-5xl font-bold font-mono ${unit.color} ${unit.label === 'Seconds' && countdown.seconds % 2 === 0 ? 'countdown-pulse' : ''}">
+                        ${unit.value.toString().padStart(2, '0')}
+                    </div>
+                    <div class="text-sm text-slate-400 mt-2">${unit.label}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateProgress(progress) {
+            // Update circular progress
+            const circle = document.getElementById('progress-circle');
+            const circumference = 565.48; // 2 * π * 90
+            const dashOffset = circumference - (progress.percentage / 100) * circumference;
+            circle.style.strokeDashoffset = dashOffset;
+
+            // Update percentage display
+            document.getElementById('progress-percentage').textContent = progress.percentage.toFixed(1);
+
+            // Update linear progress
+            document.getElementById('linear-progress').style.width = `${progress.percentage}%`;
+
+            // Update stats
+            document.getElementById('days-elapsed').textContent = progress.daysElapsed;
+            document.getElementById('days-remaining').textContent = progress.daysRemaining;
+        }
+
+        function showCompletion() {
+            document.getElementById('content').style.display = 'none';
+            document.getElementById('completion').style.display = 'flex';
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+        }
+
+        function initializeApp() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            
+            updateCountdown();
+            updateInterval = setInterval(updateCountdown, 1000);
+        }
+
+        // Handle responsive grid on window resize
+        window.addEventListener('resize', () => {
+            updateCountdown(); // This will re-render the grid with proper classes
+        });
+
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
