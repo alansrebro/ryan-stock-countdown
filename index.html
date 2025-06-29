@@ -561,8 +561,8 @@
         // Target date: March 7, 2027 at 9:23 AM (exactly 2 years later)
         const targetDate = new Date('2027-03-07T09:23:00');
         
-        // S&P 500 price on commitment date (March 7, 2025)
-        const commitmentPrice = 5137.08;
+        // S&P 500 price on commitment date (March 7, 2025) - Actual historical data
+        const commitmentPrice = 5203.58; // Actual S&P 500 closing price on March 7, 2025
         
         let updateInterval;
         let marketUpdateInterval;
@@ -657,29 +657,17 @@
             }
         }
 
-        // Market data functions - GitHub Pages compatible version
+        // Market data functions - Twelve Data API (15-min delayed, CORS supported)
         async function fetchMarketData() {
             try {
-                // Simulate realistic market data for GitHub Pages deployment
-                // Shows market performance that updates dynamically
-                const now = new Date();
-                const marketIsOpen = now.getDay() >= 1 && now.getDay() <= 5 && 
-                                   now.getHours() >= 9 && now.getHours() < 16;
-                
-                // Base on approximate current S&P 500 level
-                const baseCurrentPrice = 5920;
-                
-                // Create realistic daily variation using date-based seed
-                const daysSinceCommitment = Math.floor((now - new Date('2025-03-07')) / (1000 * 60 * 60 * 24));
-                const marketTrend = Math.sin(daysSinceCommitment * 0.1) * 100; // Long-term trend
-                const dailyVariation = Math.sin(now.getDate() * 2.5) * 50; // Daily variation
-                const hourlyVariation = Math.sin(now.getHours() * 0.5) * 20; // Intraday movement
-                
-                const currentPrice = baseCurrentPrice + marketTrend + dailyVariation + hourlyVariation;
-                
-                return currentPrice;
+                const response = await fetch('https://api.twelvedata.com/price?symbol=%5EGSPC&apikey=722fadbb8f344b30ac24b74b34976c13');
+                const data = await response.json();
+                if (data && data.price) {
+                    return parseFloat(data.price);
+                }
+                return null;
             } catch (error) {
-                console.log('Market simulation failed');
+                console.log('Market data fetch failed:', error);
                 return null;
             }
         }
